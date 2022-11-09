@@ -7,17 +7,18 @@ import { types } from "@store/reducer";
 import Answer from "../Answer"
 import Link from "next/link";
 import { useRouter } from 'next/router'
+import { getThreshold } from "src/pages/quiz/[slug]";
 
 const QuizCard = () => {
   const [store, dispatch] = useContext(StoreContext);
   const questions = store.questions
   const currentQuestion = store.currentQuestion
   const router = useRouter()
-
   const getRandom = (type) => {
     const index = Math.floor(Math.random() * store.templates[type].length);
     return store.templates[type][index];
   }
+  
 
   // console.log("CURRENT_QUESTIONS", questions)
   const verifyAnswer = (score) => {
@@ -111,6 +112,10 @@ const QuizCard = () => {
       }, 5500)
     }
   }, [questions])
+
+  useEffect(() =>{
+    console.log("success")
+  },[])
 
   const submitMultiselect = () => {
     let verifyError = store.multiAnswerSelection.find(score => score === 0)
@@ -228,6 +233,9 @@ const QuizCard = () => {
           <span style={{fontSize: "var(--m)", margin: "20px 0"}}>
             Finished in: {store.timer} Seconds
           </span>
+          <button onClick={async()=>{ const response = await getThreshold(router.query.slug) 
+          console.log(response,"resp");
+          }}>threshold</button>
         </div>
       )}
       </>
