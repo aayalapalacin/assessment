@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { StoreContext } from "@store/StoreProvider";
 import styles from "@styles/Home.module.css";
 import checkBoxStyle from "@styles/multiselect.module.css";
@@ -13,6 +13,12 @@ const QuizCard = () => {
   const [store, dispatch] = useContext(StoreContext);
   const questions = store.questions
   const currentQuestion = store.currentQuestion
+  const [threshold,setThreshold] = useState()
+  const [succesMessage,setSuccessMessage] = useState("")
+  const [successNext,setSuccessNext] = useState("")
+  const [failMessage,setFailMessage] = useState("")
+  const [failNext,setFailNext] = useState("")
+  const [finalScoreReady,setFinalScoreReady] = useState(0)
   const router = useRouter()
   const getRandom = (type) => {
     const index = Math.floor(Math.random() * store.templates[type].length);
@@ -112,11 +118,50 @@ const QuizCard = () => {
       }, 5500)
     }
   }, [questions])
+  
+  const thresholds = async()=>{ const response = await getThreshold(router.query.slug)
+  setThreshold(response.data);
+  }
 
   useEffect(() =>{
-    console.log("success")
-  },[])
+    if(store.showFinalScore){
+  thresholds();
+      setFinalScoreReady(store.score)
+    }
+  },[store.showFinalScore])
+console.log(finalScoreReady,"finalScoreReady State")
 
+// if(threshold && finalScoreReady > 0){
+
+//   for(let i = 0; i < threshold.length; i++){
+
+//       if(finalScoreReady >= threshold[i].score_threshold){
+//             setSuccessMessage(threshold[i].success_message)
+//             setSuccessNext(threshold[i].success_next)
+//           }
+//           else{
+//             // console.log("success")
+//              setFailMessage(threshold[threshold.length-1].fail_message)
+//              setFailNext(threshold[threshold.length-1].fail_next)
+//           }
+    
+//   }
+// }
+
+// threshold && threshold.forEach((e,index) =>{
+//   if(store.score >= e.score_threshold){
+//     setSuccessMessage(e.success_message)
+//     setSuccessNext(e.success_next)
+//   }
+//   else{
+//      setFailMessage(e.fail_message)
+//      setFailNext(e.fail_next)
+//   }
+// })
+console.log(succesMessage,"succesMessage")
+console.log(successNext,"successNext")
+console.log(failMessage,"failMessage")
+console.log(failNext,"failNext")
   const submitMultiselect = () => {
     let verifyError = store.multiAnswerSelection.find(score => score === 0)
 

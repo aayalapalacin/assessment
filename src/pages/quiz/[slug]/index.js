@@ -20,7 +20,6 @@ export const getStaticPaths = async () => {
 };
 
 export const getThreshold = async (slug) => {
-  
   const res = await fetch(`https://breathecode.herokuapp.com/v1/assessment/${slug}/threshold`);
   const data = await res.json();
   return {
