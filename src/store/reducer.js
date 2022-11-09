@@ -1,6 +1,7 @@
 export const types = {
   setScore: "score - puntos",
   setQuesions: "quiz - prueba",
+  setTresholds: "tresholds",
   setTemplate: "template",
   setStarted: "start - empezar",
   startTimer: "start_timer - iniciar_temporizador",
@@ -29,6 +30,7 @@ export const initialStore = {
   showFinalScore: false,
   selectedAnswer: "",
   multiAnswerSelection: [],
+  tresholds: [],
   templates: {
       correct: ['That\'s right!','Yes! Maybe you paid attention?','You seem to know most of the anwers','Keep it up!'],
       incorrect: ['Uhh no.', 'Nop, you are wrong dude.', 'Mmmmm... almost there, but no.', 'No! Have you been paying attention?']
@@ -79,6 +81,11 @@ const storeReducer = (state, action) => {
         ...state,
         getAnswer: action.payload
       }
+    case types.setTresholds:
+        return {
+          ...state,
+          tresholds: action.payload
+        }
     case types.setGetCorrect:
       return {
         ...state,

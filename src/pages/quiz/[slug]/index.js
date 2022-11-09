@@ -24,13 +24,29 @@ export const getStaticProps = async (context) => {
   const res = await fetch(
     `${process.env.API_HOST}/assessment/${slug}`
   );
+  const resTresh = await fetch(
+    `${process.env.API_HOST}/assessment/${slug}/threshold`
+  );
+  
   const data = await res.json();
+  const dataTresh = await resTresh.json();
+
+  const compare = (a, b) => {
+    if ( a.score_threshold < b.score_threshold ){
+      return -1;
+    }
+    if ( a.score_threshold > b.score_threshold ){
+      return 1;
+    }
+    return 0;
+  }
+
   return {
-    props: { quiz: data },
+    props: { quiz: data, thresholds: dataTresh.sort((compare)) },
   };
 };
 
-const QuizSlug = ({ quiz }) => {
+const QuizSlug = ({ quiz, thresholds }) => {
   const [store, dispatch] = useContext(StoreContext);
   const intervalRef = useRef(null);
 
@@ -38,6 +54,11 @@ const QuizSlug = ({ quiz }) => {
     dispatch({
       type: types.setQuesions,
       payload: quiz.questions,
+    });
+
+    dispatch({
+      type: types.setTresholds,
+      payload: thresholds,
     });
 
   }, []);

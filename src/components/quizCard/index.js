@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { StoreContext } from "@store/StoreProvider";
 import styles from "@styles/Home.module.css";
 import checkBoxStyle from "@styles/multiselect.module.css";
@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from 'next/router'
 
 const QuizCard = () => {
+  const [currentTresh, setCurrentTresh] = useState(null);
   const [store, dispatch] = useContext(StoreContext);
   const questions = store.questions
   const currentQuestion = store.currentQuestion
@@ -111,6 +112,17 @@ const QuizCard = () => {
       }, 5500)
     }
   }, [questions])
+
+  useEffect(() => {
+    if(store.showFinalScore && store.tresholds.length > 0){
+      let achieved = null;
+      store.tresholds.map((tresh) => {
+        if (store.score >= tresh.score_threshold) achieved = tresh;
+      });
+
+      setCurrentTresh(achieved);
+    }
+  }, [store.showFinalScore])
 
   const submitMultiselect = () => {
     let verifyError = store.multiAnswerSelection.find(score => score === 0)
@@ -228,6 +240,19 @@ const QuizCard = () => {
           <span style={{fontSize: "var(--m)", margin: "20px 0"}}>
             Finished in: {store.timer} Seconds
           </span>
+          {currentTresh && (
+            <>
+              <span style={{fontSize: "var(--m)", margin: "20px 0"}}>
+                {currentTresh.success_message !== '' ? currentTresh.success_message : currentTresh.fail_message}<br/>
+              </span>
+              
+              <Link href={currentTresh.success_next !== '' ? currentTresh.success_next : currentTresh.fail_next}>
+                <button className={styles.start} >
+                  Continue to Next Step
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       )}
       </>
