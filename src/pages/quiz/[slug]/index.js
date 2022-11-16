@@ -6,7 +6,7 @@ import QuizCard from "src/components/quizCard";
 import Head from "next/head";
 
 export const getStaticPaths = async () => {
-  const res = await fetch(`${process.env.API_HOST}/assessment`);
+  const res = await fetch(`https://breathecode.herokuapp.com/v1/assessment`);
   const data = await res.json();
   const paths = data.map((res) => {
     return {
@@ -19,10 +19,20 @@ export const getStaticPaths = async () => {
   };
 };
 
+export const getThreshold = async (slug) => {
+  const res = await fetch(`https://breathecode.herokuapp.com/v1/assessment/${slug}/threshold`);
+  const data = await res.json();
+  return {
+    data
+  };
+ 
+};
+
+
 export const getStaticProps = async (context) => {
   const slug = context.params.slug;
   const res = await fetch(
-    `${process.env.API_HOST}/assessment/${slug}`
+    `https://breathecode.herokuapp.com/v1/assessment/${slug}`
   );
   const resTresh = await fetch(
     `${process.env.API_HOST}/assessment/${slug}/threshold`
@@ -49,6 +59,8 @@ export const getStaticProps = async (context) => {
 const QuizSlug = ({ quiz, thresholds }) => {
   const [store, dispatch] = useContext(StoreContext);
   const intervalRef = useRef(null);
+
+  
 
   useEffect(() => {
     dispatch({
