@@ -282,6 +282,7 @@
   }
   .quiz_card {
     padding: 0.9rem;
+    height: auto;
   }
 }
 
@@ -304,6 +305,10 @@
 }
 
 @media (max-width: 470px) {
+  .quiz_grid {
+    display: flex;
+    flex-direction: column;
+  }
   .buttonTextSelector {
     font-size: 16px;
   }

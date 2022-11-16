@@ -82,11 +82,11 @@ export default function Home({ quizList }) {
 
       <footer className={styles.footer}>
         <a
-          href="https://breatheco.de/"
+          href="https://4Geeks.com/"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="noopener"
         >
-          Powered by Breathe Code
+          Powered by 4Geeks.com
         </a>
       </footer>
     </div>

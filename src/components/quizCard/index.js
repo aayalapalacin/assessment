@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { getThreshold } from "src/pages/quiz/[slug]";
 
 const QuizCard = () => {
+  const [currentTresh, setCurrentTresh] = useState(null);
   const [store, dispatch] = useContext(StoreContext);
   const questions = store.questions;
   const currentQuestion = store.currentQuestion;
@@ -149,6 +150,17 @@ const QuizCard = () => {
   console.log(successNext, "successNext");
   console.log(failMessage, "failMessage");
   console.log(failNext, "failNext");
+
+  useEffect(() => {
+    if(store.showFinalScore && store.tresholds.length > 0){
+      let achieved = null;
+      store.tresholds.map((tresh) => {
+        if (store.score >= tresh.score_threshold) achieved = tresh;
+      });
+
+      setCurrentTresh(achieved);
+    }
+  }, [store.showFinalScore])
 
   const submitMultiselect = () => {
     let verifyError = store.multiAnswerSelection.find((score) => score === 0);
