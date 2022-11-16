@@ -18,8 +18,7 @@ const QuizCard = () => {
   const [successNext, setSuccessNext] = useState("");
   const [failMessage, setFailMessage] = useState("");
   const [failNext, setFailNext] = useState("");
-  const [finalScoreReady, setFinalScoreReady] = useState(0);
-  let thresholdItems= [];
+  let thresholdItems = [];
 
   const router = useRouter();
   const getRandom = (type) => {
@@ -126,55 +125,31 @@ const QuizCard = () => {
       console.log("response.data", response.data);
 
       setThreshold(response.data);
-      setFinalScoreReady(store.score);
-      if(response.data){
-        for(let i = 0; i < response.data.length; i++){
-            console.log(response.data[i].score_threshold,"score thresh")
-            console.log(store.score,"score store")
-            
-            if(store.score >= response.data[i].score_threshold ){
-                thresholdItems.push(response.data[i])    
-              }
-              else {
-                setFailMessage(response.data[response.data.length - 1].fail_message)
-                setFailNext([response.data.length - 1].fail_next)
-              }
-            }
-            
-
-              setSuccessMessage(thresholdItems[0]?.success_message)
-              setSuccessNext(thresholdItems[0]?.success_next)
-            
-            console.log("thresholdItems", thresholdItems)
-          // response.data.forEach((e,index) =>{
-          //   thresholdObj[e.score_threshold]= e;
-          //   thresholdNum.push(e.score_threshold);
-          //   console.log(e.score_threshold,"score thresh")
-          //   console.log(store.score,"score store")
-          //   if(store.score >= 0 && store.score < ){}
-          //   if(store.score >= e.score_threshold){
-          //     setSuccessMessage(e.success_message)
-          //     setSuccessNext(e.success_next)
-          //   }
-          //   else if(store.score < e.score_threshold && index == response.data.length - 1){
-          //      setFailMessage(e.fail_message)
-          //      setFailNext(e.fail_next)
-          //   }
-          // })
-          
-          // setThreshold(thresholdObj);
+      if (response.data) {
+        for (let i = 0; i < response.data.length; i++) {
+          if (store.score >= response.data[i].score_threshold) {
+            thresholdItems.push(response.data[i]);
+          } else {
+            console.log(response.data[response.data.length - 1],"fail test")
+            setFailMessage(
+              response.data[response.data.length - 1].fail_message
+            );
+            setFailNext(response.data[response.data.length - 1].fail_next);
+          }
         }
 
+        setSuccessMessage(thresholdItems[0]?.success_message);
+        setSuccessNext(thresholdItems[0]?.success_next);
       }
-    }, [store.showFinalScore]);
-    console.log(finalScoreReady, "finalScoreReady State");
-    console.log(threshold, "threshold");
-    
-    console.log(successMessage, "succesMessage");
-    console.log(successNext, "successNext");
-    console.log(failMessage, "failMessage");
-    console.log(failNext, "failNext");
-  
+    }
+  }, [store.showFinalScore]);
+  console.log(threshold, "threshold");
+
+  console.log(successMessage, "succesMessage");
+  console.log(successNext, "successNext");
+  console.log(failMessage, "failMessage");
+  console.log(failNext, "failNext");
+
   const submitMultiselect = () => {
     let verifyError = store.multiAnswerSelection.find((score) => score === 0);
 
@@ -187,6 +162,49 @@ const QuizCard = () => {
     }
   };
 
+  const renderThreshold = () =>{
+    if(failMessage && failNext){
+      return (
+        <div>
+          <div style={{marginBottom:"22px"}}>
+            {failMessage}
+          </div>
+          <div>
+          <button style={{display: "flex", margin:"auto"}}>
+          <a href={failNext}>
+          Continue to next step
+          </a>
+          </button>
+          </div>
+        </div>
+      )
+    }
+    else if(successMessage && successNext){
+      return (
+        <div>
+          <div style={{marginBottom:"22px"}}>
+            {successMessage}
+          </div>
+          <div>
+          <button style={{display: "flex", margin:"auto"}}>
+          <a href={successNext}>
+          Continue to next step
+          </a>
+          </button>
+          </div>
+        </div>
+      )
+    }
+    else if(successMessage && successNext == null){
+      return (
+        <div>
+          <div style={{marginBottom:"22px"}}>
+            {successMessage}
+          </div>
+        </div>
+      )
+    }
+  }
   return (
     <div className={styles.container}>
       {store.getAnswer === true ? <Answer /> : null}
@@ -324,14 +342,8 @@ const QuizCard = () => {
               <span style={{ fontSize: "var(--m)", margin: "20px 0" }}>
                 Finished in: {store.timer} Seconds
               </span>
-              <button
-                onClick={async () => {
-                  const response = await getThreshold(router.query.slug);
-                  console.log(response.data, "resp");
-                }}
-              >
-                threshold
-              </button>
+              
+                {renderThreshold()}
             </div>
           )}
         </>
