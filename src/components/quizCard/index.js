@@ -121,9 +121,7 @@ const QuizCard = () => {
 
   useEffect(async () => {
     if (store.showFinalScore) {
-      console.log("test Thresh");
       const response = await getThreshold(router.query.slug);
-      console.log("response.data", response.data);
 
       setThreshold(response.data);
       if (response.data) {
@@ -131,7 +129,6 @@ const QuizCard = () => {
           if (store.score >= response.data[i].score_threshold) {
             thresholdItems.push(response.data[i]);
           } else {
-            console.log(response.data[response.data.length - 1],"fail test")
             setFailMessage(
               response.data[response.data.length - 1].fail_message
             );
@@ -144,12 +141,7 @@ const QuizCard = () => {
       }
     }
   }, [store.showFinalScore]);
-  console.log(threshold, "threshold");
 
-  console.log(successMessage, "succesMessage");
-  console.log(successNext, "successNext");
-  console.log(failMessage, "failMessage");
-  console.log(failNext, "failNext");
 
   useEffect(() => {
     if(store.showFinalScore && store.tresholds.length > 0){
